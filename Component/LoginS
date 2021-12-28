@@ -1,0 +1,183 @@
+import React,{Component} from 'react';
+import { StyleSheet, Text, View, TextInput,Image, Pressable
+} from 'react-native';
+
+
+function LoginScreen(){
+    const navigation = useNavigation()
+    const[email,setEmail]=useState(' ');
+    const[password,setPassword]=useState(' ');
+    
+}
+
+export default class LoginScreen extends Component{
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      email : '',
+      password : '',
+      check_textInputChange : false,
+      secureTextEntry : true,
+    };
+  }
+  
+  
+  
+
+  InsertRecord=()=>{
+    var Email = this.state.email;
+    var Password = this.state.password;
+
+    if ((Email.length==0) || (Password.length==0)){
+      alert("Required Field Is Missing!!!");
+    }else{
+      var APIURL = "https://nutritwizz.in/api/user.php";
+
+      var headers = {
+        'Accept' : 'application/json',
+        'Content-Type' : 'application/json'
+      };
+            
+      var Data ={
+        Email: Email,
+        Password: Password
+      };
+
+      fetch(APIURL,{
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(Data)
+      })
+      .then((Response)=>Response.json())
+      .then((Response)=>{
+        alert(Response[0].Message)
+        if (Response[0].Message == "Success") {
+          console.log("true")
+          this.props.navigation.navigate("MainScreen",{
+            P1:this.state.email
+          });
+        }
+        console.log(Data);
+        // ,{P1:this.state.email}
+      })
+      .catch((error)=>{
+        console.error("ERROR FOUND" + error);
+      })
+      
+    }
+  }
+
+  // updateSecureTextEntry(){
+  //   this.setState({
+  //     ...this.state,
+  //     secureTextEntry: !this.state.secureTextEntry
+  //   });
+  // }
+
+
+  
+
+  
+  
+  render(){
+    return(
+      <View style={styles.container}>
+        <View>
+          <Image style={{height:100,width:"50%",
+            marginBottom:10,marginTop:"30%",marginLeft:'25%'}}
+            source={require("../assets/Logo.png")}
+          />
+        </View>
+        
+        <View>
+          <TextInput style={styles.TextInput}
+            placeholder="Enter Email"
+            placeholderTextColor="#ff0000"   
+            onChangeText={email=>this.setState({email})}
+            returnKeyType = {"next"}
+            autoFocus = {true}
+            
+          />
+        </View>
+        <View>
+          <TextInput style={styles.TextInput}
+            placeholder="Enter Password"
+            placeholderTextColor="#ff0000"
+            secureTextEntry={this.state.secureTextEntry ? true : false}
+            onChangeText={password=>this.setState({password})}
+            onSubmitEditing={()=>this.InsertRecord()}
+            ref={(input) => { this.secondTextInput = input; }}
+          />
+         
+
+        </View>
+        <View>
+          
+
+            <Pressable style={styles.button} onPress={()=>this.InsertRecord()}>
+              <Text style={styles.text}>Login</Text>
+            </Pressable>
+        </View>
+          
+
+      </View>
+
+      
+       
+   );
+
+  }
+
+};
+
+    
+
+
+
+
+const styles = StyleSheet.create({
+    container: {
+        
+        backgroundColor: '#f2c334',
+        height:"100%",
+        width:"100%"
+        
+        
+      },
+      TextInput:{
+
+        height: 60,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        fontSize:20,
+        color:'black',
+        backgroundColor:"#fff",
+        borderRadius: 10,
+        
+      },
+      button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 18,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: 'green',
+        margin:10,
+        borderRadius:10,
+
+      },
+      text: {
+        fontSize: 22,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'white',
+      },
+      
+        
+})
+
+
